@@ -35,6 +35,33 @@ using namespace std;
 // of the above symbols
 int infixToPostfix(string infix[], int length, string postfix[])
 {
+    stack<char> operators;
+    for (int i = 0; i < length; i++)
+    {
+        if(infix[i] == "0" || infix[i] == "1" || infix[i] == "2" || infix[i] == "3" || infix[i] == "4" || infix[i] == "5" 
+                    || infix[i] == "6" || infix[i] == "7" || infix[i] == "8" || infix[i] == "9")
+        {
+            postfix[i] = infix[i];
+        }
+        else if (infix[i] == "(")
+        {
+            operators.push('(');
+        }
+        else if(infix[i] == "*" || infix[i] == "+" || infix[i] == "-" || infix[i] == "/" || infix[i] == "%")
+        {
+            while(!operators.empty())
+            {
+                if (infix[i] == "*" || infix[i] == "/" || infix[i] == "%")
+                {
+                    postfix[i] = operators;
+                }
+                else if (infix[i] == "+" || infix[i] == "-")
+                {
+
+                }
+            }
+        }
+    }
 }
 
 //Main function to test infixToPostfix()
