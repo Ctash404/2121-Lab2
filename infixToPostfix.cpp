@@ -35,7 +35,7 @@ using namespace std;
 // of the above symbols
 int infixToPostfix(string infix[], int length, string postfix[])
 {
-    stack<char> operators;
+    stack<string> myStack;
     for (int i = 0; i < length; i++)
     {
         if(infix[i] == "0" || infix[i] == "1" || infix[i] == "2" || infix[i] == "3" || infix[i] == "4" || infix[i] == "5" 
@@ -43,23 +43,27 @@ int infixToPostfix(string infix[], int length, string postfix[])
         {
             postfix[i] = infix[i];
         }
-        else if (infix[i] == "(")
+        else if (infix[i] == "*" || infix[i] == "/" || infix [i] == "%")
         {
-            operators.push('(');
+            myStack.push(infix[i]);
         }
-        else if(infix[i] == "*" || infix[i] == "+" || infix[i] == "-" || infix[i] == "/" || infix[i] == "%")
+        else if (infix[i] == "+" || infix[i] == "-")
         {
-            while(!operators.empty())
+            if(myStack.top() == "*" || myStack.top() == "/" || myStack.top() == "%")
             {
-                if (infix[i] == "*" || infix[i] == "/" || infix[i] == "%")
-                {
-                    postfix[i] = operators;
-                }
-                else if (infix[i] == "+" || infix[i] == "-")
-                {
-
-                }
             }
+             /*   if(myStack.empty())
+                {
+                    cout << "empty\n";
+                    return 0;
+                }
+                postfix[i] = myStack.top();
+                myStack.pop();
+            }
+            else
+            {
+                myStack.push(infix[i]);
+            }*/
         }
     }
 }
