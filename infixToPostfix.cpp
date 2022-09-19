@@ -33,39 +33,107 @@ using namespace std;
 //The function is not specified to work with any other operator symbols
 //Any string in infix may be assumed to be an integer operand if none
 // of the above symbols
+
+int precedence (string infix)
+{
+    if(infix == "(" || infix == ")")
+    {
+        return 4;
+    }
+    else if (infix == "*" || infix == "%" ||infix == "/")
+    {
+        return 3;
+    }
+    else if (infix == "-" || infix == "+")
+    {
+        return 2;
+    }
+    else 
+    {
+        return 1;
+    }
+}
+
+bool seeIfParth(string infix, int length)
+{
+    int left = 0;
+    int right = 0;
+
+    for (int i = 0; i < length; i++)
+    {
+        if(infix == "(")
+        {
+            left++;
+        }
+        else 
+        {
+            right++;
+        }
+    }
+    if(left == right)
+    {
+        return true;
+    }
+    return false;
+}
 int infixToPostfix(string infix[], int length, string postfix[])
 {
     stack<string> myStack;
+    int positionOfPostfix = 0;
+    if(seeIfParth(infix, length))
+    {
+        return 0;
+    }
     for (int i = 0; i < length; i++)
     {
-        if(infix[i] == "0" || infix[i] == "1" || infix[i] == "2" || infix[i] == "3" || infix[i] == "4" || infix[i] == "5" 
-                    || infix[i] == "6" || infix[i] == "7" || infix[i] == "8" || infix[i] == "9")
+        
+        if(precedence(infix[i]) == 1)
         {
-            postfix[i] = infix[i];
+            postfix[positionOfPostfix] == infix[i];
+            positionOfPostfix++;
         }
-        else if (infix[i] == "*" || infix[i] == "/" || infix [i] == "%")
+        else if(infix[i] == "(")
         {
             myStack.push(infix[i]);
         }
-        else if (infix[i] == "+" || infix[i] == "-")
+        else if (infix[i] == ")")
         {
-            if(myStack.top() == "*" || myStack.top() == "/" || myStack.top() == "%")
+            while(myStack.top() != "(")
             {
-            }
-             /*   if(myStack.empty())
-                {
-                    cout << "empty\n";
-                    return 0;
-                }
-                postfix[i] = myStack.top();
+                postfix[positionOfPostfix] = myStack.top();
+                positionOfPostfix++;
                 myStack.pop();
             }
-            else
+            myStack.pop();
+        }
+        else if (precedence(infix[i]) == 3)
+        {
+            while(!myStack.empty() && myStack.top() != "(")
             {
-                myStack.push(infix[i]);
-            }*/
+                postfix[positionOfPostfix] = myStack.top();
+                positionOfPostfix++;
+                myStack.pop();
+            }
+            myStack.push(infix[i]);
+        }
+        else if (precedence(infix[i]) == 2)
+        {
+            while(!myStack.empty() && myStack.top() != "(")
+            {
+                postfix[positionOfPostfix] = myStack.top();
+                positionOfPostfix++;
+                myStack.pop();
+            }
+            myStack.push(infix[i]);
+        }
+        while(!myStack.empty())
+        {
+            postfix[positionOfPostfix] = myStack.top();
+            positionOfPostfix++;
+            myStack.top();
         }
     }
+    return length = positionOfPostfix;
 }
 
 //Main function to test infixToPostfix()
