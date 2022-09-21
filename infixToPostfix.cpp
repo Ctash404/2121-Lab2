@@ -1,6 +1,6 @@
 /*
  * Name:Conner Tash
- * Date Submitted:9-12-2022
+ * Date Submitted:9-20-2022
  * Lab Section: 003
  * Assignment Name:Lab 2: Infix to Postfix Coversion
  */
@@ -34,108 +34,123 @@ using namespace std;
 //Any string in infix may be assumed to be an integer operand if none
 // of the above symbols
 
+// Function in order to get the correct order 
+// of the precendece from the infix
 int precedence (string infix)
 {
     if(infix == "(" || infix == ")")
     {
-        return 4;
+        return 1;
     }
     else if (infix == "*" || infix == "%" ||infix == "/")
     {
-        return 3;
+        return 2;
     }
     else if (infix == "-" || infix == "+")
     {
-        return 2;
+        return 3;
     }
     else 
     {
-        return 1;
+        return 4;
     }
 }
 
-bool seeIfParth(string infix, int length)
+// Checks if the parthenses there are correct 
+// amount of parthenses by aligning the left 
+// and right amount.
+bool seeIfParth(string infix[], int length)
 {
     int left = 0;
     int right = 0;
 
-    for (int i = 0; i < length; i++)
+    for (int i = 0; i < length; ++i)
     {
-        if(infix == "(")
+        if(infix[i] == "(")
         {
-            left++;
+            ++left;
         }
-        else 
+        else if (infix[i] == ")")
         {
-            right++;
+            ++right;
         }
     }
-    if(left == right)
+    if(left != right)
     {
-        return true;
+        return false;
     }
-    return false;
+    return true;
 }
 int infixToPostfix(string infix[], int length, string postfix[])
 {
     stack<string> myStack;
     int positionOfPostfix = 0;
-    if(seeIfParth(infix, length))
+
+    // Makes sure that the parenthesis are aligned
+    if(!seeIfParth(infix, length))
     {
         return 0;
     }
-    for (int i = 0; i < length; i++)
+    // The loop to change infix to postfix
+    for(int x = 0; x < length; x++)
     {
-        
-        if(precedence(infix[i]) == 1)
+        // Puts integers on the stack
+        if(precedence(infix[x]) == 4)
         {
-            postfix[positionOfPostfix] == infix[i];
-            positionOfPostfix++;
+          postfix[positionOfPostfix] = infix[x];
+          ++positionOfPostfix;
         }
-        else if(infix[i] == "(")
+        // Puts the left parenthesis on the stack
+        else if(infix[x] == "(")
         {
-            myStack.push(infix[i]);
+          myStack.push(infix[x]);
         }
-        else if (infix[i] == ")")
+        // Once the right parthensis is hit move operators and 
+        // integers off the stack to postfix array
+        else if(infix[x] == ")")
         {
-            while(myStack.top() != "(")
-            {
-                postfix[positionOfPostfix] = myStack.top();
-                positionOfPostfix++;
-                myStack.pop();
-            }
-            myStack.pop();
-        }
-        else if (precedence(infix[i]) == 3)
-        {
-            while(!myStack.empty() && myStack.top() != "(")
-            {
-                postfix[positionOfPostfix] = myStack.top();
-                positionOfPostfix++;
-                myStack.pop();
-            }
-            myStack.push(infix[i]);
-        }
-        else if (precedence(infix[i]) == 2)
-        {
-            while(!myStack.empty() && myStack.top() != "(")
-            {
-                postfix[positionOfPostfix] = myStack.top();
-                positionOfPostfix++;
-                myStack.pop();
-            }
-            myStack.push(infix[i]);
-        }
-        while(!myStack.empty())
-        {
+          while(myStack.top() != "(")
+          {
             postfix[positionOfPostfix] = myStack.top();
-            positionOfPostfix++;
-            myStack.top();
+            ++positionOfPostfix;
+            myStack.pop();
+          }
+          myStack.pop();
         }
+        // Checks for *,%,/ from the infix 
+        else if(precedence(infix[x]) == 2)
+        {
+          while(!myStack.empty() && myStack.top() != "(" && precedence(myStack.top()) != 3)
+          {
+            postfix[positionOfPostfix] = myStack.top();
+            ++positionOfPostfix;
+            myStack.pop();
+          }
+          myStack.push(infix[x]);
+        }
+        // Checks for -,+
+        else if(precedence(infix[x]) == 3)
+        {
+            while(!myStack.empty() && myStack.top() != "(")
+            {
+              postfix[positionOfPostfix] = myStack.top();
+              ++positionOfPostfix;
+              myStack.pop();
+            }
+            myStack.push(infix[x]);
+        }
+    }
+    // Takes everything that remains off the stack
+    while(!myStack.empty())
+    {
+        postfix[positionOfPostfix] = myStack.top();
+        ++positionOfPostfix;
+        myStack.pop();
     }
     return length = positionOfPostfix;
 }
 
+/*
 //Main function to test infixToPostfix()
 //Should convert 2 + 3 * 4 + ( 5 - 6 + 7 ) * 8
 //            to 2 3 4 * + 5 6 - 7 + 8 * +
@@ -167,3 +182,4 @@ int main()
     
     return 0;
 }
+*/
